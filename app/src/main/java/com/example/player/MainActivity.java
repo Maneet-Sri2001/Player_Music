@@ -1,25 +1,16 @@
 package com.example.player;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
 import android.content.Context;
 import android.database.Cursor;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.material.tabs.TabLayout;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -28,7 +19,6 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private PagerAdaptor adaptor;
+
+    Context context = this.getApplication();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 .withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                        songList = displaySong(getApplicationContext());
+                        songList = displaySong();
                     }
 
                     @Override
@@ -82,16 +74,16 @@ public class MainActivity extends AppCompatActivity {
                 }).check();
     }
 
-    public ArrayList<SongModel> displaySong(final Context context) {
+    public ArrayList<SongModel> displaySong() {
 
         final ArrayList<SongModel> list = new ArrayList<>();
 
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {MediaStore.Audio.AudioColumns.DATA, MediaStore.Audio.AudioColumns.ALBUM,
                 MediaStore.Audio.ArtistColumns.ARTIST, MediaStore.Audio.AudioColumns.DURATION,
-        MediaStore.Audio.Albums.ALBUM_ART, MediaStore.Audio.AudioColumns.GENRE, MediaStore.Audio.AudioColumns._ID,
-        MediaStore.Audio.AudioColumns.YEAR};
-        Cursor c = context.getContentResolver()
+                MediaStore.Audio.Albums.ALBUM_ART, MediaStore.Audio.AudioColumns.GENRE, MediaStore.Audio.AudioColumns._ID,
+                MediaStore.Audio.AudioColumns.YEAR};
+        Cursor c = getApplicationContext().getContentResolver()
                 .query(uri, projection, null, null, null);
 
         if (c != null) {
